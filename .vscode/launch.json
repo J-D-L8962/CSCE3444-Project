@@ -1,0 +1,24 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "externalConsole": true,
+      "cwd": "c:/Users/jacob/Desktop/CSCE3444_Project_Code/CSCE3444-Project",
+      "program": "c:/Users/jacob/Desktop/CSCE3444_Project_Code/CSCE3444-Project/build/Debug/outDebug",
+      "MIMode": "lldb",
+      "miDebuggerPath": "g++",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}
