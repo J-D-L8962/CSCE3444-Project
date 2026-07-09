@@ -1,0 +1,82 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f8f5;
+  margin: 0;
+  padding: 0;
+}
+
+.app {
+  max-width: 430px;
+  margin: 20px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 18px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+h1 {
+  color: #0b6b34;
+  text-align: center;
+}
+
+p {
+  text-align: center;
+}
+
+nav {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin: 20px 0;
+}
+
+button {
+  background: #0b6b34;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.card {
+  background: #eef8f1;
+  border: 1px solid #cfe8d6;
+  padding: 14px;
+  margin: 10px 0;
+  border-radius: 10px;
+}
+
+ul {
+  padding-left: 20px;
+}
+
+.progress-bar {
+  background: #ddd;
+  border-radius: 20px;
+  overflow: hidden;
+  height: 22px;
+}
+
+.progress-bar div {
+  width: 65%;
+  height: 100%;
+  background: #0b6b34;
+}

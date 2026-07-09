@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Smart Study Assistant</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <h1>AI Smart Study Assistant</h1>
+    <p>Your AI-powered study companion</p>
+
+    <nav>
+      <button onclick="showPage('dashboard')">Dashboard</button>
+      <button onclick="showPage('assignments')">Assignments</button>
+      <button onclick="showPage('planner')">Study Plan</button>
+      <button onclick="showPage('progress')">Progress</button>
+      <button onclick="showPage('profile')">Profile</button>
+    </nav>
+
+    <section id="dashboard" class="page active">
+      <h2>Dashboard</h2>
+      <div class="card">Upcoming Assignments: 2 tasks due soon</div>
+      <div class="card">Upcoming Exams: 1 exam this week</div>
+      <div class="card">Study Schedule: AI plan ready</div>
+      <div class="card">Progress: 65% complete</div>
+    </section>
+
+    <section id="assignments" class="page">
+      <h2>Assignment Management</h2>
+      <input id="assignmentName" placeholder="Assignment name">
+      <input id="courseName" placeholder="Course name">
+      <input id="dueDate" placeholder="Due date">
+      <button onclick="addAssignment()">Add Assignment</button>
+      <ul id="assignmentList"></ul>
+    </section>
+
+    <section id="planner" class="page">
+      <h2>AI Study Plan</h2>
+      <input id="hours" placeholder="Available study hours">
+      <button onclick="generatePlan()">Generate AI Study Plan</button>
+      <div id="planResult" class="card"></div>
+    </section>
+
+    <section id="progress" class="page">
+      <h2>Progress Tracking</h2>
+      <div class="progress-bar"><div></div></div>
+      <p>65% Complete</p>
+      <div class="card">Completed: Project Report, Study Session</div>
+      <div class="card">Pending: Math Homework, Exam Review</div>
+    </section>
+
+    <section id="profile" class="page">
+      <h2>User Profile</h2>
+      <div class="card">Name: Student</div>
+      <div class="card">Preferences: Daily reminders enabled</div>
+      <div class="card">Account Settings: Email notifications on</div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
