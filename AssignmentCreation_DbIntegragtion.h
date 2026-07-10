@@ -15,6 +15,7 @@ struct Assignment {
     string dueDate;
     string priority;
     string notes;
+    bool completed;
 };
 
 vector<Assignment> assignments;
@@ -24,7 +25,7 @@ void createAssignment(int userId) {
 
     newAssignment.id = assignments.size() + 1;
     newAssignment.userId = userId;
-
+newAssignment.completed = false;
     cin.ignore();
 
     cout << "Enter assignment title: ";
@@ -61,7 +62,10 @@ void viewAssignments(int userId) {
             cout << "Due Date: " << assignment.dueDate << endl;
             cout << "Priority: " << assignment.priority << endl;
             cout << "Notes: " << assignment.notes << endl;
-            cout << "------------------------\n";
+cout << "Status: "
+     << (assignment.completed ? "Completed" : "Incomplete")
+     << endl;
+cout << "------------------------\n";
         }
     }
 
@@ -94,6 +98,106 @@ void deleteAssignment(int userId) {
     }
 
     cout << "Assignment not found or does not belong to this user.\n";
+
 }
 
+void editAssignment(int userId) {
+    int assignmentId;
+    string newValue;
+
+    cout << "Enter assignment ID to edit: ";
+    cin >> assignmentId;
+    cin.ignore();
+
+    for (Assignment& assignment : assignments) {
+        if (assignment.id == assignmentId &&
+            assignment.userId == userId) {
+
+            cout << "Leave a field blank to keep the current value.\n";
+
+            cout << "New title: ";
+            getline(cin, newValue);
+            if (!newValue.empty()) {
+                assignment.title = newValue;
+            }
+
+            cout << "New course: ";
+            getline(cin, newValue);
+            if (!newValue.empty()) {
+                assignment.course = newValue;
+            }
+
+            cout << "New due date: ";
+            getline(cin, newValue);
+            if (!newValue.empty()) {
+                assignment.dueDate = newValue;
+            }
+
+            cout << "New priority: ";
+            getline(cin, newValue);
+            if (!newValue.empty()) {
+                assignment.priority = newValue;
+            }
+
+            cout << "New notes: ";
+            getline(cin, newValue);
+            if (!newValue.empty()) {
+                assignment.notes = newValue;
+            }
+
+            cout << "Assignment updated successfully.\n";
+            return;
+        }
+    }
+
+    cout << "Assignment not found or permission denied.\n";
+}
+
+void markAssignmentCompleted(int userId) {
+    int assignmentId;
+
+    cout << "Enter assignment ID to mark completed: ";
+    cin >> assignmentId;
+
+    for (Assignment& assignment : assignments) {
+        if (assignment.id == assignmentId &&
+            assignment.userId == userId) {
+
+            assignment.completed = true;
+            cout << "Assignment marked as completed.\n";
+            return;
+        }
+    }
+
+    cout << "Assignment not found or permission denied.\n";
+}
+
+void showProgressAnalytics(int userId) {
+    int total = 0;
+    int completed = 0;
+
+    for (const Assignment& assignment : assignments) {
+        if (assignment.userId == userId) {
+            total++;
+
+            if (assignment.completed) {
+                completed++;
+            }
+        }
+    }
+
+    int incomplete = total - completed;
+    double completionRate = 0.0;
+
+    if (total > 0) {
+        completionRate =
+            static_cast<double>(completed) / total * 100.0;
+    }
+
+    cout << "\n--- Progress Analytics ---\n";
+    cout << "Total assignments: " << total << endl;
+    cout << "Completed assignments: " << completed << endl;
+    cout << "Incomplete assignments: " << incomplete << endl;
+    cout << "Completion rate: " << completionRate << "%\n";
+}
 #endif

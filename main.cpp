@@ -81,20 +81,57 @@ void registerUserDemo() {
 
     cout << "Registration test passed. User information and preferences are valid.\n";
 }
+void updateProfile() {
+    string newValue;
 
+    cin.ignore();
+
+    cout << "\n--- Update Profile ---\n";
+    cout << "Leave a field blank to keep the current value.\n";
+
+    cout << "Current username: " << testUser.username << endl;
+    cout << "New username: ";
+    getline(cin, newValue);
+
+    if (!newValue.empty()) {
+        testUser.username = newValue;
+    }
+
+    cout << "Current email: " << testUser.email << endl;
+    cout << "New email: ";
+    getline(cin, newValue);
+
+    if (!newValue.empty()) {
+        testUser.email = newValue;
+    }
+
+    cout << "Current preferences: " << testUser.preferences << endl;
+    cout << "New preferences: ";
+    getline(cin, newValue);
+
+    if (!newValue.empty()) {
+        testUser.preferences = newValue;
+    }
+
+    cout << "Profile updated successfully.\n";
+}
 int main() {
     int choice;
 
     do {
         cout << "\n===== AI Smart Study App Backend Demo =====\n";
-        cout << "1. Register User Test\n";
-        cout << "2. Login\n";
-        cout << "3. Create Assignment\n";
-        cout << "4. View Assignments\n";
-        cout << "5. Delete Assignment\n";
-        cout << "6. Logout\n";
-        cout << "0. Exit\n";
-        cout << "Choose an option: ";
+cout << "1. Register User Test\n";
+cout << "2. Login\n";
+cout << "3. Create Assignment\n";
+cout << "4. View Assignments\n";
+cout << "5. Delete Assignment\n";
+cout << "6. Edit Assignment\n";
+cout << "7. Mark Assignment Completed\n";
+cout << "8. View Progress Analytics\n";
+cout << "9. Update Profile\n";
+cout << "10. Logout\n";
+cout << "0. Exit\n";
+cout << "Choose an option: ";
         cin >> choice;
 
         switch (choice) {
@@ -131,17 +168,48 @@ int main() {
                 break;
 
             case 6:
-                if (isLoggedIn) {
-                    logout();
-                } else {
-                    cout << "No user is currently logged in.\n";
-                }
-                break;
+    if (isLoggedIn) {
+        editAssignment(currentUserId);
+    } else {
+        cout << "Please log in first.\n";
+    }
+    break;
 
-            case 0:
-                cout << "Exiting program.\n";
-                break;
+case 7:
+    if (isLoggedIn) {
+        markAssignmentCompleted(currentUserId);
+    } else {
+        cout << "Please log in first.\n";
+    }
+    break;
 
+case 8:
+    if (isLoggedIn) {
+        showProgressAnalytics(currentUserId);
+    } else {
+        cout << "Please log in first.\n";
+    }
+    break;
+
+case 9:
+    if (isLoggedIn) {
+        updateProfile();
+    } else {
+        cout << "Please log in first.\n";
+    }
+    break;
+
+case 10:
+    if (isLoggedIn) {
+        logout();
+    } else {
+        cout << "No user is currently logged in.\n";
+    }
+    break;
+
+         case 0:
+    cout << "Exiting program.\n";
+    break;   
             default:
                 cout << "Invalid option. Try again.\n";
         }
