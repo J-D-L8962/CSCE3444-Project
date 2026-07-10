@@ -1,62 +1,1182 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
   <title>AI Smart Study Assistant</title>
+
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-  <div class="app">
-    <h1>AI Smart Study Assistant</h1>
-    <p>Your AI-powered study companion</p>
 
-    <nav>
-      <button onclick="showPage('dashboard')">Dashboard</button>
-      <button onclick="showPage('assignments')">Assignments</button>
-      <button onclick="showPage('planner')">Study Plan</button>
-      <button onclick="showPage('progress')">Progress</button>
-      <button onclick="showPage('profile')">Profile</button>
-    </nav>
+  <!-- LOGIN / REGISTRATION SCREEN -->
+  <section id="authScreen" class="auth-screen">
 
-    <section id="dashboard" class="page active">
-      <h2>Dashboard</h2>
-      <div class="card">Upcoming Assignments: 2 tasks due soon</div>
-      <div class="card">Upcoming Exams: 1 exam this week</div>
-      <div class="card">Study Schedule: AI plan ready</div>
-      <div class="card">Progress: 65% complete</div>
-    </section>
+    <div class="auth-card">
 
-    <section id="assignments" class="page">
-      <h2>Assignment Management</h2>
-      <input id="assignmentName" placeholder="Assignment name">
-      <input id="courseName" placeholder="Course name">
-      <input id="dueDate" placeholder="Due date">
-      <button onclick="addAssignment()">Add Assignment</button>
-      <ul id="assignmentList"></ul>
-    </section>
+      <div class="brand-logo">AI</div>
 
-    <section id="planner" class="page">
-      <h2>AI Study Plan</h2>
-      <input id="hours" placeholder="Available study hours">
-      <button onclick="generatePlan()">Generate AI Study Plan</button>
-      <div id="planResult" class="card"></div>
-    </section>
+      <h1>AI Smart Study Assistant</h1>
 
-    <section id="progress" class="page">
-      <h2>Progress Tracking</h2>
-      <div class="progress-bar"><div></div></div>
-      <p>65% Complete</p>
-      <div class="card">Completed: Project Report, Study Session</div>
-      <div class="card">Pending: Math Homework, Exam Review</div>
-    </section>
+      <p class="subtitle">
+        Your AI-powered study companion
+      </p>
 
-    <section id="profile" class="page">
-      <h2>User Profile</h2>
-      <div class="card">Name: Student</div>
-      <div class="card">Preferences: Daily reminders enabled</div>
-      <div class="card">Account Settings: Email notifications on</div>
-    </section>
+      <div class="auth-tabs">
+
+        <button
+          id="loginTab"
+          class="auth-tab active"
+          type="button"
+          onclick="showLoginForm()"
+        >
+          Login
+        </button>
+
+        <button
+          id="registerTab"
+          class="auth-tab"
+          type="button"
+          onclick="showRegisterForm()"
+        >
+          Register
+        </button>
+
+      </div>
+
+      <!-- LOGIN FORM -->
+      <form
+        id="loginForm"
+        class="auth-form"
+        onsubmit="loginUser(event)"
+      >
+
+        <label for="loginEmail">Email Address</label>
+
+        <input
+          id="loginEmail"
+          type="email"
+          placeholder="student@my.unt.edu"
+          required
+        >
+
+        <label for="loginPassword">Password</label>
+
+        <input
+          id="loginPassword"
+          type="password"
+          placeholder="Enter your password"
+          required
+        >
+
+        <button class="primary-btn full-width" type="submit">
+          Login
+        </button>
+
+        <button
+          class="text-btn"
+          type="button"
+          onclick="showMessage('Password reset link sent.')"
+        >
+          Forgot Password?
+        </button>
+
+      </form>
+
+      <!-- REGISTRATION FORM -->
+      <form
+        id="registerForm"
+        class="auth-form hidden"
+        onsubmit="registerUser(event)"
+      >
+
+        <label for="registerName">Full Name</label>
+
+        <input
+          id="registerName"
+          type="text"
+          placeholder="Enter your full name"
+          required
+        >
+
+        <label for="registerEmail">UNT Email Address</label>
+
+        <input
+          id="registerEmail"
+          type="email"
+          placeholder="student@my.unt.edu"
+          required
+        >
+
+        <label for="registerPassword">Password</label>
+
+        <input
+          id="registerPassword"
+          type="password"
+          placeholder="Create a password"
+          minlength="6"
+          required
+        >
+
+        <label for="confirmPassword">Confirm Password</label>
+
+        <input
+          id="confirmPassword"
+          type="password"
+          placeholder="Confirm your password"
+          minlength="6"
+          required
+        >
+
+        <button class="primary-btn full-width" type="submit">
+          Create Account
+        </button>
+
+      </form>
+
+      <p id="authMessage" class="message"></p>
+
+    </div>
+
+  </section>
+
+
+  <!-- MAIN APPLICATION -->
+  <div id="mainApp" class="app-shell hidden">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <div class="sidebar-brand">
+
+        <div class="small-logo">AI</div>
+
+        <div>
+          <h2>Smart Study</h2>
+          <p>UNT Student Assistant</p>
+        </div>
+
+      </div>
+
+      <nav class="sidebar-nav">
+
+        <button
+          class="nav-item active"
+          data-page="dashboardPage"
+          onclick="showPage('dashboardPage', this)"
+        >
+          <span>🏠</span>
+          Dashboard
+        </button>
+
+        <button
+          class="nav-item"
+          data-page="assignmentsPage"
+          onclick="showPage('assignmentsPage', this)"
+        >
+          <span>📝</span>
+          Assignments
+        </button>
+
+        <button
+          class="nav-item"
+          data-page="examsPage"
+          onclick="showPage('examsPage', this)"
+        >
+          <span>📚</span>
+          Exams
+        </button>
+
+        <button
+          class="nav-item"
+          data-page="plannerPage"
+          onclick="showPage('plannerPage', this)"
+        >
+          <span>🤖</span>
+          AI Study Plan
+        </button>
+
+        <button
+          class="nav-item"
+          data-page="progressPage"
+          onclick="showPage('progressPage', this)"
+        >
+          <span>📊</span>
+          Progress
+        </button>
+
+        <button
+          class="nav-item"
+          data-page="profilePage"
+          onclick="showPage('profilePage', this)"
+        >
+          <span>👤</span>
+          Profile
+        </button>
+
+      </nav>
+
+      <button class="logout-btn" onclick="logoutUser()">
+        Log Out
+      </button>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+      <!-- TOP BAR -->
+      <header class="top-bar">
+
+        <div>
+
+          <button
+            id="mobileMenuButton"
+            class="mobile-menu-btn"
+            type="button"
+            onclick="toggleSidebar()"
+          >
+            ☰
+          </button>
+
+          <h1 id="pageTitle">Dashboard</h1>
+
+          <p id="currentDate"></p>
+
+        </div>
+
+        <div class="top-actions">
+
+          <button
+            class="notification-btn"
+            type="button"
+            onclick="showNotifications()"
+          >
+            🔔
+            <span id="notificationCount">3</span>
+          </button>
+
+          <div class="user-summary">
+
+            <div class="avatar">SG</div>
+
+            <div>
+              <strong id="headerUserName">Simran Ghimire</strong>
+              <small>Computer Science Student</small>
+            </div>
+
+          </div>
+
+        </div>
+
+      </header>
+
+
+      <!-- DASHBOARD PAGE -->
+      <section id="dashboardPage" class="page active-page">
+
+        <div class="welcome-banner">
+
+          <div>
+
+            <p class="eyebrow">WELCOME BACK</p>
+
+            <h2>
+              Ready to make progress today,
+              <span id="welcomeName">Simran</span>?
+            </h2>
+
+            <p>
+              Your AI study assistant has organized your most important
+              academic tasks.
+            </p>
+
+          </div>
+
+          <div class="banner-icon">🎓</div>
+
+        </div>
+
+
+        <div class="stats-grid">
+
+          <article class="stat-card">
+
+            <div class="stat-icon">📝</div>
+
+            <div>
+              <p>Pending Assignments</p>
+              <h3 id="pendingAssignmentCount">2</h3>
+              <span>Tasks requiring attention</span>
+            </div>
+
+          </article>
+
+          <article class="stat-card">
+
+            <div class="stat-icon">📚</div>
+
+            <div>
+              <p>Upcoming Exams</p>
+              <h3 id="upcomingExamCount">2</h3>
+              <span>Exams scheduled</span>
+            </div>
+
+          </article>
+
+          <article class="stat-card">
+
+            <div class="stat-icon">✅</div>
+
+            <div>
+              <p>Completed Tasks</p>
+              <h3 id="completedTaskCount">1</h3>
+              <span>Great work so far</span>
+            </div>
+
+          </article>
+
+          <article class="stat-card">
+
+            <div class="stat-icon">🔥</div>
+
+            <div>
+              <p>Study Streak</p>
+              <h3 id="studyStreak">5 days</h3>
+              <span>Keep the streak alive</span>
+            </div>
+
+          </article>
+
+        </div>
+
+
+        <div class="dashboard-grid">
+
+          <article class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <p class="eyebrow">ASSIGNMENTS</p>
+                <h2>Upcoming Assignments</h2>
+              </div>
+
+              <button
+                class="link-btn"
+                type="button"
+                onclick="openPageFromDashboard('assignmentsPage')"
+              >
+                View All
+              </button>
+
+            </div>
+
+            <div id="dashboardAssignments" class="item-list"></div>
+
+          </article>
+
+
+          <article class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <p class="eyebrow">EXAMS</p>
+                <h2>Upcoming Exams</h2>
+              </div>
+
+              <button
+                class="link-btn"
+                type="button"
+                onclick="openPageFromDashboard('examsPage')"
+              >
+                View All
+              </button>
+
+            </div>
+
+            <div id="dashboardExams" class="item-list"></div>
+
+          </article>
+
+
+          <article class="panel ai-panel">
+
+            <div class="panel-header">
+
+              <div>
+                <p class="eyebrow">AI RECOMMENDATION</p>
+                <h2>Your Study Focus</h2>
+              </div>
+
+              <span class="ai-badge">AI</span>
+
+            </div>
+
+            <p id="dashboardAiRecommendation">
+              Start with your high-priority Software Engineering assignment,
+              then spend 45 minutes reviewing Linear Algebra.
+            </p>
+
+            <button
+              class="primary-btn"
+              type="button"
+              onclick="openPageFromDashboard('plannerPage')"
+            >
+              Generate AI Study Plan
+            </button>
+
+          </article>
+
+
+          <article class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <p class="eyebrow">PROGRESS</p>
+                <h2>Weekly Progress</h2>
+              </div>
+
+              <span id="dashboardProgressText">33%</span>
+
+            </div>
+
+            <div class="progress-track">
+
+              <div
+                id="dashboardProgressBar"
+                class="progress-fill"
+                style="width: 33%;"
+              ></div>
+
+            </div>
+
+            <div class="progress-summary">
+
+              <div>
+                <strong id="dashboardCompleted">1</strong>
+                <span>Completed</span>
+              </div>
+
+              <div>
+                <strong id="dashboardPending">2</strong>
+                <span>Pending</span>
+              </div>
+
+              <div>
+                <strong id="dashboardStudyHours">6</strong>
+                <span>Study Hours</span>
+              </div>
+
+            </div>
+
+          </article>
+
+        </div>
+
+      </section>
+
+
+      <!-- ASSIGNMENTS PAGE -->
+      <section id="assignmentsPage" class="page">
+
+        <div class="section-heading">
+
+          <div>
+            <p class="eyebrow">ACADEMIC TASKS</p>
+            <h2>Assignment Management</h2>
+            <p>
+              Add, edit, delete, prioritize, and complete your assignments.
+            </p>
+          </div>
+
+          <button
+            class="primary-btn"
+            type="button"
+            onclick="toggleAssignmentForm()"
+          >
+            + Add Assignment
+          </button>
+
+        </div>
+
+
+        <div id="assignmentFormCard" class="form-card hidden">
+
+          <h3 id="assignmentFormTitle">Add New Assignment</h3>
+
+          <form
+            id="assignmentForm"
+            class="data-form"
+            onsubmit="saveAssignment(event)"
+          >
+
+            <input id="editingAssignmentId" type="hidden">
+
+            <div class="form-group">
+
+              <label for="assignmentTitle">Assignment Name</label>
+
+              <input
+                id="assignmentTitle"
+                type="text"
+                placeholder="Example: Sprint 2 Report"
+                required
+              >
+
+            </div>
+
+            <div class="form-group">
+
+              <label for="assignmentCourse">Course Name</label>
+
+              <input
+                id="assignmentCourse"
+                type="text"
+                placeholder="Example: CSCE 3444"
+                required
+              >
+
+            </div>
+
+            <div class="form-group">
+
+              <label for="assignmentDueDate">Due Date</label>
+
+              <input
+                id="assignmentDueDate"
+                type="date"
+                required
+              >
+
+            </div>
+
+            <div class="form-group">
+
+              <label for="assignmentPriority">Priority</label>
+
+              <select id="assignmentPriority" required>
+                <option value="">Choose priority</option>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+              </select>
+
+            </div>
+
+            <div class="form-actions">
+
+              <button class="primary-btn" type="submit">
+                Save Assignment
+              </button>
+
+              <button
+                class="secondary-btn"
+                type="button"
+                onclick="cancelAssignmentForm()"
+              >
+                Cancel
+              </button>
+
+            </div>
+
+          </form>
+
+        </div>
+
+
+        <div class="toolbar">
+
+          <input
+            id="assignmentSearch"
+            type="search"
+            placeholder="Search assignments..."
+            oninput="renderAssignments()"
+          >
+
+          <select
+            id="assignmentFilter"
+            onchange="renderAssignments()"
+          >
+            <option value="All">All Priorities</option>
+            <option value="High">High Priority</option>
+            <option value="Medium">Medium Priority</option>
+            <option value="Low">Low Priority</option>
+            <option value="Completed">Completed</option>
+            <option value="Pending">Pending</option>
+          </select>
+
+        </div>
+
+
+        <div id="assignmentList" class="task-grid"></div>
+
+        <div id="assignmentEmptyState" class="empty-state hidden">
+          <div>📝</div>
+          <h3>No assignments found</h3>
+          <p>Add an assignment to begin organizing your workload.</p>
+        </div>
+
+      </section>
+
+
+      <!-- EXAMS PAGE -->
+      <section id="examsPage" class="page">
+
+        <div class="section-heading">
+
+          <div>
+            <p class="eyebrow">EXAM TRACKING</p>
+            <h2>Exam Management</h2>
+            <p>
+              Track upcoming exams and important review dates.
+            </p>
+          </div>
+
+          <button
+            class="primary-btn"
+            type="button"
+            onclick="toggleExamForm()"
+          >
+            + Add Exam
+          </button>
+
+        </div>
+
+
+        <div id="examFormCard" class="form-card hidden">
+
+          <h3 id="examFormTitle">Add New Exam</h3>
+
+          <form
+            id="examForm"
+            class="data-form"
+            onsubmit="saveExam(event)"
+          >
+
+            <input id="editingExamId" type="hidden">
+
+            <div class="form-group">
+
+              <label for="examTitle">Exam Name</label>
+
+              <input
+                id="examTitle"
+                type="text"
+                placeholder="Example: Final Exam"
+                required
+              >
+
+            </div>
+
+            <div class="form-group">
+
+              <label for="examCourse">Course Name</label>
+
+              <input
+                id="examCourse"
+                type="text"
+                placeholder="Example: Linear Algebra"
+                required
+              >
+
+            </div>
+
+            <div class="form-group">
+
+              <label for="examDate">Exam Date</label>
+
+              <input
+                id="examDate"
+                type="date"
+                required
+              >
+
+            </div>
+
+            <div class="form-group">
+
+              <label for="examTime">Exam Time</label>
+
+              <input
+                id="examTime"
+                type="time"
+                required
+              >
+
+            </div>
+
+            <div class="form-group">
+
+              <label for="examLocation">Location</label>
+
+              <input
+                id="examLocation"
+                type="text"
+                placeholder="Example: UNT Discovery Park"
+                required
+              >
+
+            </div>
+
+            <div class="form-actions">
+
+              <button class="primary-btn" type="submit">
+                Save Exam
+              </button>
+
+              <button
+                class="secondary-btn"
+                type="button"
+                onclick="cancelExamForm()"
+              >
+                Cancel
+              </button>
+
+            </div>
+
+          </form>
+
+        </div>
+
+
+        <div id="examList" class="task-grid"></div>
+
+        <div id="examEmptyState" class="empty-state hidden">
+          <div>📚</div>
+          <h3>No exams added</h3>
+          <p>Add an exam to receive reminders and study recommendations.</p>
+        </div>
+
+      </section>
+
+
+      <!-- AI STUDY PLANNER PAGE -->
+      <section id="plannerPage" class="page">
+
+        <div class="section-heading">
+
+          <div>
+            <p class="eyebrow">PERSONALIZED PLANNING</p>
+            <h2>AI Study Planner</h2>
+            <p>
+              Generate a study schedule based on your deadlines,
+              priority levels, and available time.
+            </p>
+          </div>
+
+          <span class="ai-status">
+            <span></span>
+            AI Assistant Ready
+          </span>
+
+        </div>
+
+
+        <div class="planner-layout">
+
+          <article class="panel">
+
+            <h3>Study Preferences</h3>
+
+            <form
+              id="plannerForm"
+              class="planner-form"
+              onsubmit="generateStudyPlan(event)"
+            >
+
+              <div class="form-group">
+
+                <label for="availableHours">
+                  Available Study Hours
+                </label>
+
+                <input
+                  id="availableHours"
+                  type="number"
+                  min="1"
+                  max="12"
+                  placeholder="Example: 4"
+                  required
+                >
+
+              </div>
+
+              <div class="form-group">
+
+                <label for="studyDate">Study Date</label>
+
+                <input
+                  id="studyDate"
+                  type="date"
+                  required
+                >
+
+              </div>
+
+              <div class="form-group">
+
+                <label for="breakPreference">
+                  Break Preference
+                </label>
+
+                <select id="breakPreference">
+                  <option value="25">5-minute break every 25 minutes</option>
+                  <option value="45">10-minute break every 45 minutes</option>
+                  <option value="60">15-minute break every 60 minutes</option>
+                </select>
+
+              </div>
+
+              <div class="form-group">
+
+                <label for="studyGoal">Main Study Goal</label>
+
+                <textarea
+                  id="studyGoal"
+                  rows="4"
+                  placeholder="Example: Complete my project and review for the exam."
+                ></textarea>
+
+              </div>
+
+              <button class="primary-btn full-width" type="submit">
+                🤖 Generate AI Study Plan
+              </button>
+
+            </form>
+
+          </article>
+
+
+          <article class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <p class="eyebrow">RECOMMENDED SCHEDULE</p>
+                <h3>Your AI Study Plan</h3>
+              </div>
+
+              <button
+                class="secondary-btn"
+                type="button"
+                onclick="clearStudyPlan()"
+              >
+                Clear
+              </button>
+
+            </div>
+
+            <div id="studyPlanResult" class="study-plan-result">
+
+              <div class="empty-plan">
+                <div>🤖</div>
+                <h3>Your study plan will appear here</h3>
+                <p>
+                  Enter your study availability and let the AI assistant
+                  organize your schedule.
+                </p>
+              </div>
+
+            </div>
+
+          </article>
+
+        </div>
+
+      </section>
+
+
+      <!-- PROGRESS PAGE -->
+      <section id="progressPage" class="page">
+
+        <div class="section-heading">
+
+          <div>
+            <p class="eyebrow">PERFORMANCE OVERVIEW</p>
+            <h2>Progress Tracking</h2>
+            <p>
+              Review completed tasks, pending work, and study progress.
+            </p>
+          </div>
+
+          <button
+            class="secondary-btn"
+            type="button"
+            onclick="refreshProgress()"
+          >
+            Refresh Progress
+          </button>
+
+        </div>
+
+
+        <div class="progress-hero">
+
+          <div class="progress-circle" id="progressCircle">
+
+            <div>
+              <strong id="overallProgressPercent">33%</strong>
+              <span>Overall Progress</span>
+            </div>
+
+          </div>
+
+          <div class="progress-copy">
+
+            <p class="eyebrow">THIS WEEK</p>
+
+            <h2 id="progressMessage">
+              You are making steady progress.
+            </h2>
+
+            <p>
+              Complete high-priority assignments first to improve your
+              weekly score.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="progress-card-grid">
+
+          <article class="metric-card">
+
+            <span>✅</span>
+
+            <div>
+              <p>Completed Tasks</p>
+              <h3 id="progressCompletedCount">1</h3>
+            </div>
+
+          </article>
+
+          <article class="metric-card">
+
+            <span>⏳</span>
+
+            <div>
+              <p>Pending Tasks</p>
+              <h3 id="progressPendingCount">2</h3>
+            </div>
+
+          </article>
+
+          <article class="metric-card">
+
+            <span>⏱️</span>
+
+            <div>
+              <p>Study Hours</p>
+              <h3 id="progressStudyHours">6</h3>
+            </div>
+
+          </article>
+
+          <article class="metric-card">
+
+            <span>🔥</span>
+
+            <div>
+              <p>Current Streak</p>
+              <h3 id="progressStreak">5 days</h3>
+            </div>
+
+          </article>
+
+        </div>
+
+
+        <div class="dashboard-grid">
+
+          <article class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <p class="eyebrow">TASK STATUS</p>
+                <h3>Completed Assignments</h3>
+              </div>
+
+            </div>
+
+            <div id="completedAssignmentList" class="item-list"></div>
+
+          </article>
+
+
+          <article class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <p class="eyebrow">TASK STATUS</p>
+                <h3>Pending Assignments</h3>
+              </div>
+
+            </div>
+
+            <div id="pendingAssignmentList" class="item-list"></div>
+
+          </article>
+
+        </div>
+
+      </section>
+
+
+      <!-- PROFILE PAGE -->
+      <section id="profilePage" class="page">
+
+        <div class="section-heading">
+
+          <div>
+            <p class="eyebrow">ACCOUNT SETTINGS</p>
+            <h2>User Profile</h2>
+            <p>
+              Manage your student information and application preferences.
+            </p>
+          </div>
+
+        </div>
+
+
+        <div class="profile-layout">
+
+          <article class="profile-card">
+
+            <div class="large-avatar">SG</div>
+
+            <h2 id="profileDisplayName">Simran Ghimire</h2>
+
+            <p>Computer Science Student</p>
+
+            <span class="status-badge">Active Student</span>
+
+          </article>
+
+
+          <article class="panel">
+
+            <h3>Personal Information</h3>
+
+            <form
+              id="profileForm"
+              class="data-form"
+              onsubmit="saveProfile(event)"
+            >
+
+              <div class="form-group">
+
+                <label for="profileName">Full Name</label>
+
+                <input
+                  id="profileName"
+                  type="text"
+                  value="Simran Ghimire"
+                  required
+                >
+
+              </div>
+
+              <div class="form-group">
+
+                <label for="profileEmail">Email Address</label>
+
+                <input
+                  id="profileEmail"
+                  type="email"
+                  value="student@my.unt.edu"
+                  required
+                >
+
+              </div>
+
+              <div class="form-group">
+
+                <label for="profileMajor">Major</label>
+
+                <input
+                  id="profileMajor"
+                  type="text"
+                  value="Computer Science"
+                  required
+                >
+
+              </div>
+
+              <div class="form-group">
+
+                <label for="profileUniversity">University</label>
+
+                <input
+                  id="profileUniversity"
+                  type="text"
+                  value="University of North Texas"
+                  required
+                >
+
+              </div>
+
+              <div class="form-group">
+
+                <label for="profileSemester">Current Semester</label>
+
+                <input
+                  id="profileSemester"
+                  type="text"
+                  value="Summer 2026"
+                  required
+                >
+
+              </div>
+
+              <button class="primary-btn" type="submit">
+                Save Profile
+              </button>
+
+            </form>
+
+          </article>
+
+
+          <article class="panel">
+
+            <h3>Preferences</h3>
+
+            <div class="preference-row">
+
+              <div>
+                <strong>Assignment Reminders</strong>
+                <p>Receive reminders before assignment deadlines.</p>
+              </div>
+
+              <label class="switch">
+                <input id="assignmentReminderToggle" type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+
+            </div>
+                      </article>
+        </div>
+      </section>
+    </main>
   </div>
 
   <script src="app.js"></script>
 </body>
 </html>
+
+           
