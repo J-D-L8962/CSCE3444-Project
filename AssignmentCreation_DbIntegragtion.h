@@ -1,100 +1,203 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <postgresql/libpq-fe.h> //official PostgreSQL C library, ensure your configuration is correct to use this library
+#ifndef ASSIGNMENT_CREATION_DB_INTEGRATION_H
+#define ASSIGNMENT_CREATION_DB_INTEGRATION_H
 
-// Helper function to safely execute SQL commands that don't return data
-int execute_sql(PGconn *conn, const char *sql) 
-{
-    PGresult *res = PQexec(conn, sql);
-    
-    if (PQresultStatus(res) != PGRES_COMMAND_OK)
-    {
-        fprintf(stderr, "SQL Error: %s", PQerrorMessage(conn));
-        PQclear(res);
-        return 0;
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+struct Assignment {
+    int id;
+    int userId;
+    string title;
+    string course;
+    string dueDate;
+    string priority;
+    string notes;
+    bool completed;
+};
+
+vector<Assignment> assignments;
+
+void createAssignment(int userId) {
+    Assignment newAssignment;
+
+    newAssignment.id = assignments.size() + 1;
+    newAssignment.userId = userId;
+newAssignment.completed = false;
+    cin.ignore();
+
+    cout << "Enter assignment title: ";
+    getline(cin, newAssignment.title);
+
+    cout << "Enter course: ";
+    getline(cin, newAssignment.course);
+
+    cout << "Enter due date (YYYY-MM-DD): ";
+    getline(cin, newAssignment.dueDate);
+
+    cout << "Enter priority (High/Medium/Low): ";
+    getline(cin, newAssignment.priority);
+
+    cout << "Enter notes: ";
+    getline(cin, newAssignment.notes);
+
+    assignments.push_back(newAssignment);
+
+    cout << "\nAssignment created and stored successfully.\n";
+}
+
+void viewAssignments(int userId) {
+    cout << "\n--- Your Assignments ---\n";
+
+    bool found = false;
+
+    for (const Assignment& assignment : assignments) {
+        if (assignment.userId == userId) {
+            found = true;
+            cout << "ID: " << assignment.id << endl;
+            cout << "Title: " << assignment.title << endl;
+            cout << "Course: " << assignment.course << endl;
+            cout << "Due Date: " << assignment.dueDate << endl;
+            cout << "Priority: " << assignment.priority << endl;
+            cout << "Notes: " << assignment.notes << endl;
+cout << "Status: "
+     << (assignment.completed ? "Completed" : "Incomplete")
+     << endl;
+cout << "------------------------\n";
+        }
     }
-    
-    PQclear(res);
-    return 1;
+
+    if (!found) {
+        cout << "No assignments found.\n";
+    }
 }
 
-//Create the database tables automatically
-void setup_database(PGconn *conn) 
-{
-    // Create  Users Table
-    const char *users_table = 
-        "CREATE TABLE IF NOT EXISTS users ("
-        "id SERIAL PRIMARY KEY,"
-        "username TEXT UNIQUE NOT NULL,"
-        "password TEXT NOT NULL);";
-    execute_sql(conn, users_table);
+void deleteAssignment(int userId) {
+    int assignmentId;
+    char confirm;
 
-    // Create Assignments Table (Linked to users via user_id)
-    const char *assignments_table = 
-        "CREATE TABLE IF NOT EXISTS assignments ("
-        "id SERIAL PRIMARY KEY,"
-        "user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,"
-        "title TEXT NOT NULL,"
-        "due_date TEXT NOT NULL);";
-    execute_sql(conn, assignments_table);
-}
+    cout << "Enter assignment ID to delete: ";
+    cin >> assignmentId;
 
-//Authenticate user and return their unique User ID (-1 if failed)
-int authenticate_user(PGconn *conn, const char *username, const char *password) 
-{
-    const char *sql = "SELECT id FROM users WHERE username = $1 AND password = $2;";
-    const char *paramValues[2];
-    paramValues[0] = username;
-    paramValues[1] = password;
+    cout << "Are you sure you want to delete this assignment? (Y/N): ";
+    cin >> confirm;
 
-    // Secure parameterized query to block SQL injection attacks
-    PGresult *res = PQexecParams(conn, sql, 2, NULL, paramValues, NULL, NULL, 0);
-    int user_id = -1;
-
-    if (PQresultStatus(res) == PGRES_TUPLES_OK && PQntuples(res) > 0) 
-    {
-        user_id = atoi(PQgetvalue(res, 0, 0)); // Extract ID from row 0, column 0
+    if (confirm != 'Y' && confirm != 'y') {
+        cout << "Deletion cancelled.\n";
+        return;
     }
 
-    PQclear(res);
-    return user_id;
+    for (auto it = assignments.begin(); it != assignments.end(); ++it) {
+        if (it->id == assignmentId && it->userId == userId) {
+            assignments.erase(it);
+            cout << "Assignment deleted successfully.\n";
+            return;
+        }
+    }
+
+    cout << "Assignment not found or does not belong to this user.\n";
+
 }
 
-//Fetch and print assignments belonging ONLY to the logged-in user
-void show_assignments(PGconn *conn, int user_id)
-{
-    const char *sql = "SELECT title, due_date FROM assignments WHERE user_id = $1;";
-    char user_id_str[16];
-    sprintf(user_id_str, "%d", user_id);
-    
-    const char *paramValues[1];
-    paramValues[0] = user_id_str;
+void editAssignment(int userId) {
+    int assignmentId;
+    string newValue;
 
-    PGresult *res = PQexecParams(conn, sql, 1, NULL, paramValues, NULL, NULL, 0);
+    cout << "Enter assignment ID to edit: ";
+    cin >> assignmentId;
+    cin.ignore();
 
-    if (PQresultStatus(res) == PGRES_TUPLES_OK) 
-    {
-        printf("\n--- YOUR ASSIGNMENTS (pgAdmin/PostgreSQL) ---\n");
-        int rows = PQntuples(res);
-        
-        if (rows == 0) 
-        {
-            printf("No assignments found for your account.\n");
-        } else 
-        {
-            for (int i = 0; i < rows; i++) 
-            {
-                char *title = PQgetvalue(res, i, 0);
-                char *due = PQgetvalue(res, i, 1);
-                printf("Task: %s | Due: %s\n", title, due);
+    for (Assignment& assignment : assignments) {
+        if (assignment.id == assignmentId &&
+            assignment.userId == userId) {
+
+            cout << "Leave a field blank to keep the current value.\n";
+
+            cout << "New title: ";
+            getline(cin, newValue);
+            if (!newValue.empty()) {
+                assignment.title = newValue;
+            }
+
+            cout << "New course: ";
+            getline(cin, newValue);
+            if (!newValue.empty()) {
+                assignment.course = newValue;
+            }
+
+            cout << "New due date: ";
+            getline(cin, newValue);
+            if (!newValue.empty()) {
+                assignment.dueDate = newValue;
+            }
+
+            cout << "New priority: ";
+            getline(cin, newValue);
+            if (!newValue.empty()) {
+                assignment.priority = newValue;
+            }
+
+            cout << "New notes: ";
+            getline(cin, newValue);
+            if (!newValue.empty()) {
+                assignment.notes = newValue;
+            }
+
+            cout << "Assignment updated successfully.\n";
+            return;
+        }
+    }
+
+    cout << "Assignment not found or permission denied.\n";
+}
+
+void markAssignmentCompleted(int userId) {
+    int assignmentId;
+
+    cout << "Enter assignment ID to mark completed: ";
+    cin >> assignmentId;
+
+    for (Assignment& assignment : assignments) {
+        if (assignment.id == assignmentId &&
+            assignment.userId == userId) {
+
+            assignment.completed = true;
+            cout << "Assignment marked as completed.\n";
+            return;
+        }
+    }
+
+    cout << "Assignment not found or permission denied.\n";
+}
+
+void showProgressAnalytics(int userId) {
+    int total = 0;
+    int completed = 0;
+
+    for (const Assignment& assignment : assignments) {
+        if (assignment.userId == userId) {
+            total++;
+
+            if (assignment.completed) {
+                completed++;
             }
         }
-        printf("--------------------------------------------\n");
-    } else 
-    {
-        fprintf(stderr, "Failed to fetch assignments: %s", PQerrorMessage(conn));
     }
 
-    PQclear(res);
+    int incomplete = total - completed;
+    double completionRate = 0.0;
+
+    if (total > 0) {
+        completionRate =
+            static_cast<double>(completed) / total * 100.0;
+    }
+
+    cout << "\n--- Progress Analytics ---\n";
+    cout << "Total assignments: " << total << endl;
+    cout << "Completed assignments: " << completed << endl;
+    cout << "Incomplete assignments: " << incomplete << endl;
+    cout << "Completion rate: " << completionRate << "%\n";
 }
+#endif

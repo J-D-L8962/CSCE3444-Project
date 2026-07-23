@@ -1,81 +1,51 @@
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdbool.h>
-#include <sodium.h>// Requires the libsodium library installed on your system
+#ifndef PASSWORD_VALIDATION_H
+#define PASSWORD_VALIDATION_H
 
-//Validating password rules
-bool validate_password(const char *password) 
-{
-    int length = strlen(password);
-    // Initialize flags to track character categories
-    bool has_upper = false;
-    bool has_lower = false;
-    bool has_digit = false;
-    bool has_special = false;
+#include <iostream>
+#include <string>
+#include <cctype>
 
-    //Enforce minimum length restriction
-    if (length < 8) 
-    {
-        printf("Validation Failed: Password must be at least 8 characters long.\n");
+using namespace std;
+
+bool validatePassword(const string& password) {
+    bool hasUpper = false;
+    bool hasLower = false;
+    bool hasDigit = false;
+    bool hasSpecial = false;
+
+    if (password.length() < 8) {
+        cout << "Password must be at least 8 characters long.\n";
         return false;
     }
 
-    // Iterate through each character in the string
-    for (int i = 0; i < length; i++) {
-        if (isupper((unsigned char)password[i])) 
-        {
-            has_upper = true;
-        } else if (islower((unsigned char)password[i])) 
-        {
-            has_lower = true;
-        } else if (isdigit((unsigned char)password[i])) 
-        {
-            has_digit = true;
-        } else if (ispunct((unsigned char)password[i])) 
-        {
-            has_special = true;
-        }
+    for (char ch : password) {
+        if (isupper(ch)) hasUpper = true;
+        else if (islower(ch)) hasLower = true;
+        else if (isdigit(ch)) hasDigit = true;
+        else if (ispunct(ch)) hasSpecial = true;
     }
 
-    // Evaluate flags and output targeted error messages
-    if (!has_upper) 
-    {
-        printf("Validation Failed: Missing an uppercase letter.\n");
+    if (!hasUpper) {
+        cout << "Password must contain at least one uppercase letter.\n";
         return false;
     }
-    if (!has_lower) 
-    {
-        printf("Validation Failed: Missing a lowercase letter.\n");
+
+    if (!hasLower) {
+        cout << "Password must contain at least one lowercase letter.\n";
         return false;
     }
-    if (!has_digit) 
-    {
-        printf("Validation Failed: Missing a number.\n");
+
+    if (!hasDigit) {
+        cout << "Password must contain at least one number.\n";
         return false;
     }
-    if (!has_special) 
-    {
-        printf("Validation Failed: Missing a special character (e.g., !, @, #, $).\n");
+
+    if (!hasSpecial) {
+        cout << "Password must contain at least one special character.\n";
         return false;
     }
 
     return true;
 }
 
-//Securely hash the password using Argon2id
-bool hash_password(const char *plaintext_password, char *output_buffer) 
-{
-    // crypto_pwhash_str automatically creates a salt, hashes, and formats the output
-    int result = crypto_pwhash_str
-    (
-        output_buffer, 
-        plaintext_password, 
-        strlen(plaintext_password),
-        crypto_pwhash_OPSLIMIT_SENSITIVE, 
-        crypto_pwhash_MEMLIMIT_SENSITIVE
-    );
-
-    // Returns true (1) if hashing succeeds, false (0) if it fails
-    return (result == 0);
-}
+#endif
